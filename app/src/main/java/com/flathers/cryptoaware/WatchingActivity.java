@@ -1,12 +1,9 @@
 package com.flathers.cryptoaware;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,10 +24,13 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
+
 public class WatchingActivity extends AppCompatActivity {
 
     private static final String STATE_TAG = "StateChange";
     private static final String COIN_VIEW = "CoinView";
+    private static final String BUTTON_CLICK = "ButtonClick";
     String[] demoStringValues = new String[] {"BTC", "LTC", "HTML5", "WAVES", "DASH", "DODGE"};
 
     @Override
@@ -68,7 +67,7 @@ public class WatchingActivity extends AppCompatActivity {
 
         //Generates a custoom ListView item for each item in coins
         //TODO: customize for full extent of API parameters
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.coin_view, parent, false);
@@ -95,6 +94,27 @@ public class WatchingActivity extends AppCompatActivity {
             LinearLayout bidLayout = (LinearLayout) row3.findViewById(R.id.watching_ll_bidLayout);
             TextView bidValue = (TextView) bidLayout.findViewById(R.id.watching_txt_bidValue);
 
+            //Set onClickListener to open a generic alert window
+            editProperties.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View v){
+                    //Log the button that was clicked
+                    Log.i(BUTTON_CLICK, (coins[position] + " edit properties"));
+
+                    //TODO: Remove the alert dialog, and replace with properties fragment
+                    //Create the alert dialog builder
+                    //This entire dialog will be removed and replaced with a fragment
+                    //It currently serves as a POC of OnClickListener
+                    final AlertDialog.Builder futureDevelopment = new AlertDialog.Builder(context);
+                    futureDevelopment.setTitle("AlertDialog");
+                    futureDevelopment.setMessage("Future development space for " + coins[position]);
+                    futureDevelopment.setCancelable(true);
+
+                    AlertDialog alert = futureDevelopment.create();
+                    alert.show();
+
+
+                }
+            });
 
             //Change text to that of the current coin
             nameValue.setText(coins[position]);
@@ -113,6 +133,7 @@ public class WatchingActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_watching, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

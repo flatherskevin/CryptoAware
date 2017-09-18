@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="coinViewPrimary">#00CCFE</color>
+    <color name="positive">#44E056</color>
+    <color name="negative">#E04422</color>
+    <color name="watchingBackground">#FAFAFA</color>
+</resources>

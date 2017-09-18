@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/watching_rl_coinContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:orientation="horizontal">
+
+    <TableLayout
+        android:id="@+id/watching_tl_coinTable"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:id="@+id/watching_tr_row1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/row_margin">
+
+            <TextView
+                android:id="@+id/watching_txt_nameValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/coin_margin"
+                android:text="COIN"
+                android:textSize="24sp"
+                android:layout_column="0"/>
+
+            <LinearLayout
+                android:id="@+id/watching_ll_changeLayout"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_column="1">
+
+                <FrameLayout
+                    android:id="@+id/watching_rl_arrowLayout"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/watching_upArrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:tint="@color/positive"
+                        app:srcCompat="@android:drawable/arrow_up_float"
+                        android:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/watching_downArrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:tint="@color/negative"
+                        app:srcCompat="@android:drawable/arrow_down_float"
+                        android:visibility="invisible"/>
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/watching_txt_changeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="43.67%"
+                    android:textColor="@color/positive"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="24sp"
+                    android:layout_marginStart="4dp"/>
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/watching_imgbtn_editProperties"
+                android:layout_column="2"
+                android:layout_marginEnd="@dimen/coin_margin"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/watchingBackground"
+                app:srcCompat="@drawable/ic_mode_edit_black_24dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/watching_tr_row2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/row_margin">
+
+            <LinearLayout
+                android:id="@+id/watching_ll_walletLayout"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_column="0"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/watching_txt_walletDescr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wallet"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"
+                    android:layout_marginStart="@dimen/coin_margin"/>
+
+                <TextView
+                    android:id="@+id/watching_txt_walletValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="100.15"
+                    android:textColor="@color/coinViewPrimary"
+                    android:layout_gravity="start"
+                    android:textSize="18sp"
+                    android:layout_marginStart="@dimen/coin_margin"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/watching_ll_profitLayout"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_column="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/watching_txt_profitDescr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profit"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"
+                    android:layout_marginStart="@dimen/coin_margin"/>
+
+                <TextView
+                    android:id="@+id/watching_txt_profitValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+ 5.23"
+                    android:textColor="@color/positive"
+                    android:layout_gravity="start"
+                    android:textSize="18sp"
+                    android:layout_marginStart="@dimen/coin_margin"/>
+
+            </LinearLayout>
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/watching_tr_row3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/row_margin">
+
+            <LinearLayout
+                android:id="@+id/watching_ll_askLayout"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_column="0"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/watching_txt_askDescr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ask"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"
+                    android:layout_marginStart="@dimen/coin_margin"/>
+
+                <TextView
+                    android:id="@+id/watching_txt_askValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.00000002"
+                    android:textColor="@color/coinViewPrimary"
+                    android:layout_gravity="start"
+                    android:textSize="18sp"
+                    android:layout_marginStart="@dimen/coin_margin"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/watching_ll_bidLayout"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_column="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/watching_txt_bidDescr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bid"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_gravity="start"
+                    android:textSize="12sp"
+                    android:layout_marginStart="@dimen/coin_margin"/>
+
+                <TextView
+                    android:id="@+id/watching_txt_bidValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0.00000003"
+                    android:textColor="@color/coinViewPrimary"
+                    android:layout_gravity="start"
+                    android:textSize="18sp"
+                    android:layout_marginStart="@dimen/coin_margin"/>
+
+            </LinearLayout>
+
+        </TableRow>
+
+    </TableLayout>
+
+
+
+</RelativeLayout>

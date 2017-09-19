@@ -2,6 +2,8 @@ package com.flathers.cryptoaware;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -100,7 +102,7 @@ public class WatchingActivity extends AppCompatActivity {
                     //Log the button that was clicked
                     Log.i(BUTTON_CLICK, (coins[position] + " edit properties"));
 
-                    //TODO: Remove the alert dialog, and replace with properties fragment
+                    //TODO: Remove the alert dialog, and replace with properties fragment or activity
                     //Create the alert dialog builder
                     //This entire dialog will be removed and replaced with a fragment
                     //It currently serves as a POC of OnClickListener
@@ -125,6 +127,8 @@ public class WatchingActivity extends AppCompatActivity {
 
             return rowView;
         }
+
+
     }
 
     @Override

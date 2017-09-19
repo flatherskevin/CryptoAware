@@ -4,4 +4,6 @@
     <string name="action_about">About</string>
     <string name="action_watching">Watching</string>
     <string name="relative_layout_coin_notification">Profit\nNotification</string>
+    <string name="coin_selection_confirm">Select</string>
+    <string name="coin_selection_cancel">Cancel</string>
 </resources>

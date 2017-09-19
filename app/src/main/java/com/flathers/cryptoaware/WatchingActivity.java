@@ -1,5 +1,6 @@
 package com.flathers.cryptoaware;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -13,16 +14,19 @@ import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.util.Log;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import java.util.Arrays;
 
 import org.w3c.dom.Text;
 
@@ -30,6 +34,7 @@ import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 public class WatchingActivity extends AppCompatActivity {
 
+    final Context context = this;
     private static final String STATE_TAG = "StateChange";
     private static final String COIN_VIEW = "CoinView";
     private static final String BUTTON_CLICK = "ButtonClick";
@@ -41,6 +46,27 @@ public class WatchingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_watching);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ImageButton addCoinButton = (ImageButton) findViewById(R.id.watching_imgbtn_addCoin);
+
+        addCoinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.coin_selection);
+                dialog.setTitle("Add Coin");
+
+                NumberPicker selector = (NumberPicker) dialog.findViewById(R.id.watching_numpkr_selector);
+                selector.setMinValue(0);
+                selector.setMaxValue(demoStringValues.length - 1);
+                Arrays.sort(demoStringValues);
+                selector.setDisplayedValues(demoStringValues);
+                selector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+                dialog.create();
+                dialog.show();
+            }
+        });
 
         //This is a demo of generating a list of coin information
         //This will be replaced with saved states of user-added favorites

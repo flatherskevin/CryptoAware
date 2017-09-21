@@ -7,27 +7,24 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.util.Log;
-
 /**
- * Created by flath on 9/17/2017.
+ * Created by flath on 9/20/2017.
  */
 
-public class GenerateAvg extends Price {
-    private final String coin;
-    private final String[] exchanges;
-    private static final String TAG = GenerateAvg.class.getName();
+public class PriceMultiFull extends Price {
+    private final String[] coins;
+    private final String exchange;
+    private static final String TAG = PriceMultiFull.class.getName();
     private Context mContext;
-    private String url = "https://min-api.cryptocompare.com/data/generateAvg?";
+    private String url = "https://min-api.cryptocompare.com/data/pricemultifull?";
 
-    public GenerateAvg(Context mContext, String coin, String[] exchanges){
-        this.coin = coin;
-        this.exchanges = exchanges;
+    public PriceMultiFull(Context mContext, String[] coins, String exchange){
+        this.coins = coins;
+        this.exchange = exchange;
         this.mContext = mContext;
         this.setURL();
     }
@@ -37,12 +34,12 @@ public class GenerateAvg extends Price {
     }
 
     private void setURL(){
-        String exchangeChunk = "markets=";
-        for(String exchange : exchanges){
-            exchangeChunk += (exchange + ",");
+        String coinsChunk = "fsyms=";
+        for(String coin : coins){
+            coinsChunk += (coin + ",");
         }
-        exchangeChunk = exchangeChunk.substring(0,exchangeChunk.length() - 1);
-        url += (coin + "&tsym=BTC&" + exchangeChunk);
+        coinsChunk = coinsChunk.substring(0,coinsChunk.length() - 1);
+        url += (coinsChunk + "&tsyms=BTC&e=" + exchange);
         Log.i(TAG, "url: " + url);
     }
 
@@ -68,4 +65,5 @@ public class GenerateAvg extends Price {
         });
         requestQueue.add(jsObjRequest);
     }
+
 }

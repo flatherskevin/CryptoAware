@@ -27,6 +27,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import java.util.Arrays;
+import com.flathers.cryptoaware.GenerateAvg;
 
 import org.w3c.dom.Text;
 
@@ -38,7 +39,8 @@ public class WatchingActivity extends AppCompatActivity {
     private static final String STATE_TAG = "StateChange";
     private static final String COIN_VIEW = "CoinView";
     private static final String BUTTON_CLICK = "ButtonClick";
-    String[] demoStringValues = new String[] {"BTC", "LTC", "HTML5", "WAVES", "DASH", "DODGE"};
+    String[] demoMarkets = new String[] {"Yobit", "Kraken"};
+    String[] demoStringValues = new String[] {"LTC","DODGE"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,12 @@ public class WatchingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_watching);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        GenerateAvg jsonGenerateAvg = new GenerateAvg(context, "LTC", demoMarkets);
+        jsonGenerateAvg.sendRequest();
+
+        PriceMultiFull jsonPriceMultiFull = new PriceMultiFull(context, demoStringValues, "Yobit");
+        jsonPriceMultiFull.sendRequest();
 
         ImageButton addCoinButton = (ImageButton) findViewById(R.id.watching_imgbtn_addCoin);
 

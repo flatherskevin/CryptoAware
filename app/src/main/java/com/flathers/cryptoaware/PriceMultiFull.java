@@ -6,11 +6,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONObject;
-
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 /**
  * Created by flath on 9/20/2017.
  */
@@ -60,6 +59,7 @@ public class PriceMultiFull extends Price {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //TODO: add toast when there is a network error
+                toast(mContext, "Connection error");
                 Log.i(TAG, "Error: " + error.toString());
             }
         });

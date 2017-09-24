@@ -3,12 +3,14 @@ package com.flathers.cryptoaware;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by flath on 9/21/2017.
  */
 
 public class WatchingCoinsDb extends SQLiteOpenHelper{
+    private static final String TAG = WatchingCoinsDb.class.getName();
     public static final String DB_NAME = "CryptoAware.db";
     public static final String TABLE_NAME = "watching_coins";
     public static final int DB_VERSION = 1;
@@ -51,13 +53,45 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
     public static final String DISPLAY_SUPPLY = "DISPLAY_SUPPLY";
     public static final String DISPLAY_MKTCAP = "DISPLAY_MKTCAP";
     public static final String CREATE_TABLE = "CREATE TABLE "
-            + TABLE_NAME            +   "("
-            + RAW_TYPE              +   "INTEGER,"
-            + RAW_MARKET            +   "TEXT,"
-            + RAW_FROMSYMBOL        +   "TEXT,"
-            + RAW_TOSYMBOL          +   "TEXT,"
-            + RAW_FLAGS             +   "INTEGER,"
-            + RAW_PRICE             +   "REAL,";
+            + TABLE_NAME                +   "("
+            + RAW_TYPE                  +   " INTEGER,"
+            + RAW_MARKET                +   " TEXT,"
+            + RAW_FROMSYMBOL            +   " TEXT,"
+            + RAW_TOSYMBOL              +   " TEXT,"
+            + RAW_FLAGS                 +   " INTEGER,"
+            + RAW_PRICE                 +   " REAL,"
+            + RAW_LASTUPDATE            +   " INTEGER,"
+            + RAW_LASTVOLUME            +   " REAL,"
+            + RAW_LASTVOLUMETO          +   " REAL,"
+            + RAW_LASTTRADEID           +   " INTEGER,"
+            + RAW_VOLUME24HOUR          +   " REAL,"
+            + RAW_VOLUME24HOURTO        +   " REAL,"
+            + RAW_OPEN24HOUR            +   " REAL,"
+            + RAW_HIGH24HOUR            +   " REAL,"
+            + RAW_LOW24HOUR             +   " REAL,"
+            + RAW_LASTMARKET            +   " TEXT,"
+            + RAW_CHANGE24HOUR          +   " REAL,"
+            + RAW_CHANGEPCT24HOUR       +   " REAL,"
+            + RAW_SUPPLY                +   " REAL,"
+            + RAW_MKTCAP                +   " REAL,"
+            + DISPLAY_MARKET            +   " TEXT,"
+            + DISPLAY_FROMSYMBOL        +   " TEXT,"
+            + DISPLAY_TOSYMBOL          +   " TEXT,"
+            + DISPLAY_PRICE             +   " REAL,"
+            + DISPLAY_LASTUPDATE        +   " INTEGER,"
+            + DISPLAY_LASTVOLUME        +   " REAL,"
+            + DISPLAY_LASTVOLUMETO      +   " REAL,"
+            + DISPLAY_LASTTRADEID       +   " INTEGER,"
+            + DISPLAY_VOLUME24HOUR      +   " REAL,"
+            + DISPLAY_VOLUME24HOURTO    +   " REAL,"
+            + DISPLAY_OPEN24HOUR        +   " REAL,"
+            + DISPLAY_HIGH24HOUR        +   " REAL,"
+            + DISPLAY_LOW24HOUR         +   " REAL,"
+            + DISPLAY_LASTMARKET        +   " TEXT,"
+            + DISPLAY_CHANGE24HOUR      +   " REAL,"
+            + DISPLAY_CHANGEPCT24HOUR   +   " REAL,"
+            + DISPLAY_SUPPLY            +   " REAL,"
+            + DISPLAY_MKTCAP            +   " REAL);";
 
 
 
@@ -65,8 +99,24 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+    public void insertRow(){
+        try{
+
+        }catch(Exception e){
+            //TODO:Handle exceptions by type - bad practice to keep generalized
+
+        }
+
+    }
+
     public void onCreate(SQLiteDatabase db){
-        //db.execSQL(TABLE_CREATE);
+        try {
+            db.execSQL(CREATE_TABLE);
+            Log.i(TAG, "Table created");
+        } catch(Exception e){
+            //TODO:Handle exceptions by type - bad practice to keep generalized
+
+        }
     }
 
     @Override

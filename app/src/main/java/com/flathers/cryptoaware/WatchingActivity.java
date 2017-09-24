@@ -3,8 +3,6 @@ package com.flathers.cryptoaware;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,21 +23,22 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
-import com.flathers.cryptoaware.GenerateAvg;
+import java.util.List;
 
-import org.w3c.dom.Text;
-
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 public class WatchingActivity extends AppCompatActivity {
-
-    final Context context = this;
+    private static final String TAG = WatchingActivity.class.getName();
+    final Context mContext = this;
     private static final String STATE_TAG = "StateChange";
     private static final String COIN_VIEW = "CoinView";
     private static final String BUTTON_CLICK = "ButtonClick";
     String[] demoMarkets = new String[] {"Yobit", "Kraken"};
     String[] demoStringValues = new String[] {"LTC","DODGE"};
+    CoinList coinList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,30 +47,40 @@ public class WatchingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        GenerateAvg jsonGenerateAvg = new GenerateAvg(context, "LTC", demoMarkets);
-        jsonGenerateAvg.sendRequest();
-
-        PriceMultiFull jsonPriceMultiFull = new PriceMultiFull(context, demoStringValues, "Yobit");
-        jsonPriceMultiFull.sendRequest();
+        //TODO: this loading onCreate is a rough and dirty way to make it work. Fix the async issue
+        coinList = new CoinList(mContext);
 
         ImageButton addCoinButton = (ImageButton) findViewById(R.id.watching_imgbtn_addCoin);
 
         addCoinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Dialog dialog = new Dialog(context);
-                dialog.setContentView(R.layout.coin_selection);
-                dialog.setTitle("Add Coin");
+                try {
 
-                NumberPicker selector = (NumberPicker) dialog.findViewById(R.id.watching_numpkr_selector);
-                selector.setMinValue(0);
-                selector.setMaxValue(demoStringValues.length - 1);
-                Arrays.sort(demoStringValues);
-                selector.setDisplayedValues(demoStringValues);
-                selector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+                    ArrayList<String> newArrayList = coinList.getCoinArrayList();
+                    Log.i(TAG, "coinList: " + newArrayList.toString());
 
-                dialog.create();
-                dialog.show();
+                    String[] coinsAvailable = newArrayList.toArray(new String[newArrayList.size()]);
+
+                    final Dialog dialog = new Dialog(mContext);
+                    dialog.setContentView(R.layout.coin_selection);
+                    dialog.setTitle("Add Coin");
+
+                    NumberPicker selector = (NumberPicker) dialog.findViewById(R.id.watching_numpkr_selector);
+                    selector.setMinValue(0);
+                    //Log.i(TAG, coinsAvailable.toString());
+                    selector.setMaxValue(coinsAvailable.length - 1);
+                    Arrays.sort(coinsAvailable);
+                    selector.setDisplayedValues(coinsAvailable);
+                    selector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+                    dialog.create();
+                    dialog.show();
+                }catch(Exception e){
+                    e.printStackTrace();
+                    Log.i(TAG, e.getStackTrace().toString());
+                    Log.i(TAG, e.toString());
+                }
             }
         });
 
@@ -83,8 +91,8 @@ public class WatchingActivity extends AppCompatActivity {
 
         //Find list from activity_watching and set the adapter
         LinearLayout mainContainer = (LinearLayout) findViewById(R.id.watching_ll_mainContainer);
-        ListView coinList = (ListView) mainContainer.findViewById(R.id.watching_lv_coinList);
-        coinList.setAdapter(watchingAdapter);
+        ListView coinListView = (ListView) mainContainer.findViewById(R.id.watching_lv_coinList);
+        coinListView.setAdapter(watchingAdapter);
 
         Log.i(STATE_TAG, "onCreate");
     }

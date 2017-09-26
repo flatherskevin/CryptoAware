@@ -3,6 +3,7 @@ package com.flathers.cryptoaware;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,7 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,9 +38,10 @@ public class WatchingActivity extends AppCompatActivity {
     private static final String STATE_TAG = "StateChange";
     private static final String COIN_VIEW = "CoinView";
     private static final String BUTTON_CLICK = "ButtonClick";
-    String[] demoMarkets = new String[] {"Yobit", "Kraken"};
-    String[] demoStringValues = new String[] {"LTC","DODGE"};
-    CoinList coinList;
+    private String[] demoMarkets = new String[] {"Yobit", "Kraken"};
+    private String[] demoCoins = new String[] {"LTC","DASH"};
+    private CoinList coinList;
+    private WatchingCoinsDb watchingCoinsDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,15 @@ public class WatchingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Make sure database is setup on install
+        watchingCoinsDb = new WatchingCoinsDb(mContext);
+
         //TODO: this loading onCreate is a rough and dirty way to make it work. Fix the async issue
         coinList = new CoinList(mContext);
+
+        //TODO: remove dummy coins once coinPicker is fully good to go
+        PriceMultiFull priceMultiFull = new PriceMultiFull(mContext, demoCoins, "Yobit");
+        priceMultiFull.sendRequest();
 
         ImageButton addCoinButton = (ImageButton) findViewById(R.id.watching_imgbtn_addCoin);
 
@@ -56,19 +66,20 @@ public class WatchingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-
+                    //
                     ArrayList<String> newArrayList = coinList.getCoinArrayList();
-                    Log.i(TAG, "coinList: " + newArrayList.toString());
 
                     String[] coinsAvailable = newArrayList.toArray(new String[newArrayList.size()]);
 
+                    //Create a dialog to choose coins from
                     final Dialog dialog = new Dialog(mContext);
                     dialog.setContentView(R.layout.coin_selection);
                     dialog.setTitle("Add Coin");
 
+                    //Usage of a NumberPicker is satisfactory for now to choose coins
+                    //TODO: add a search bar since there are so many coins
                     NumberPicker selector = (NumberPicker) dialog.findViewById(R.id.watching_numpkr_selector);
                     selector.setMinValue(0);
-                    //Log.i(TAG, coinsAvailable.toString());
                     selector.setMaxValue(coinsAvailable.length - 1);
                     Arrays.sort(coinsAvailable);
                     selector.setDisplayedValues(coinsAvailable);
@@ -77,9 +88,7 @@ public class WatchingActivity extends AppCompatActivity {
                     dialog.create();
                     dialog.show();
                 }catch(Exception e){
-                    e.printStackTrace();
-                    Log.i(TAG, e.getStackTrace().toString());
-                    Log.i(TAG, e.toString());
+                    Log.i(TAG, e.toString() + e.getStackTrace());
                 }
             }
         });
@@ -87,7 +96,7 @@ public class WatchingActivity extends AppCompatActivity {
         //This is a demo of generating a list of coin information
         //This will be replaced with saved states of user-added favorites
         //List items will be more complex than just text in the future
-        CoinAdapter watchingAdapter = new CoinAdapter(this, demoStringValues);
+        CoinAdapter watchingAdapter = new CoinAdapter(this, demoCoins);
 
         //Find list from activity_watching and set the adapter
         LinearLayout mainContainer = (LinearLayout) findViewById(R.id.watching_ll_mainContainer);
@@ -163,7 +172,23 @@ public class WatchingActivity extends AppCompatActivity {
             //Change text to that of the current coin
             nameValue.setText(coins[position]);
 
-            //TODO: load / save states of checkboxes from / to SQL database
+            //load states of coins from SQL database
+            SQLiteDatabase db = watchingCoinsDb.getReadableDatabase();
+            String[] cols = {watchingCoinsDb.DISPLAY_CHANGEPCT24HOUR, watchingCoinsDb.DISPLAY_PRICE};
+            Cursor c = db.query(
+                    watchingCoinsDb.TABLE_NAME,
+                    cols,
+                    "RAW_FROMSYMBOL=?",
+                    new String[]{coins[position]},
+                    null,
+                    null,
+                    null
+            );
+
+            c.moveToFirst();
+            changeValue.setText(c.getString(c.getColumnIndexOrThrow(watchingCoinsDb.DISPLAY_CHANGEPCT24HOUR)));
+            askValue.setText(c.getString(c.getColumnIndexOrThrow(watchingCoinsDb.DISPLAY_PRICE)));
+            c.close();
 
             Log.i(COIN_VIEW, "Coin view created for " + coins[position]);
 

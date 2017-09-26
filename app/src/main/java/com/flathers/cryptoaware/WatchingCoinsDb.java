@@ -53,7 +53,7 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
     public static final String DISPLAY_SUPPLY = "DISPLAY_SUPPLY";
     public static final String DISPLAY_MKTCAP = "DISPLAY_MKTCAP";
     public static final String CREATE_TABLE = "CREATE TABLE "
-            + TABLE_NAME                +   "("
+            + TABLE_NAME                +   " ("
             + RAW_TYPE                  +   " INTEGER,"
             + RAW_MARKET                +   " TEXT,"
             + RAW_FROMSYMBOL            +   " TEXT,"
@@ -91,7 +91,8 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
             + DISPLAY_CHANGE24HOUR      +   " REAL,"
             + DISPLAY_CHANGEPCT24HOUR   +   " REAL,"
             + DISPLAY_SUPPLY            +   " REAL,"
-            + DISPLAY_MKTCAP            +   " REAL);";
+            + DISPLAY_MKTCAP            +   " REAL,"
+            + "PRIMARY KEY(" + RAW_FROMSYMBOL + "));";
 
 
 
@@ -99,24 +100,11 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
         super(context, DB_NAME, null, DB_VERSION);
     }
 
-    public void insertRow(){
-        try{
-
-        }catch(Exception e){
-            //TODO:Handle exceptions by type - bad practice to keep generalized
-
-        }
-
-    }
-
     public void onCreate(SQLiteDatabase db){
-        try {
-            db.execSQL(CREATE_TABLE);
-            Log.i(TAG, "Table created");
-        } catch(Exception e){
-            //TODO:Handle exceptions by type - bad practice to keep generalized
-
-        }
+        //TODO: remove DROP TABLE statement when testing table creation is complete
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL(CREATE_TABLE);
+        Log.i(TAG, "Table created");
     }
 
     @Override

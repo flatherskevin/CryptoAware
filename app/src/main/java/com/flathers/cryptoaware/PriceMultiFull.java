@@ -6,10 +6,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.content.ContentValues;
+
+import java.util.Iterator;
+
 /**
  * Created by flath on 9/20/2017.
  */
@@ -18,14 +27,24 @@ public class PriceMultiFull extends Price {
     private final String[] coins;
     private final String exchange;
     private static final String TAG = PriceMultiFull.class.getName();
+    private static final String TSYM = "BTC";
     private Context mContext;
     private String url = "https://min-api.cryptocompare.com/data/pricemultifull?";
+    private WatchingCoinsDb watchingCoinsDb;
+    private SQLiteDatabase db;
+    private String[] primaryKeyValue = {""};
+    private final String TABLE_NAME;
 
     public PriceMultiFull(Context mContext, String[] coins, String exchange){
         this.coins = coins;
         this.exchange = exchange;
         this.mContext = mContext;
         this.setURL();
+        this.watchingCoinsDb = new WatchingCoinsDb(mContext);
+        this.db = watchingCoinsDb.getWritableDatabase();
+        //this.contentValues = new ContentValues();
+        this.primaryKeyValue[0] = "";
+        this.TABLE_NAME = watchingCoinsDb.TABLE_NAME;
     }
 
     public String getURL(){
@@ -38,7 +57,7 @@ public class PriceMultiFull extends Price {
             coinsChunk += (coin + ",");
         }
         coinsChunk = coinsChunk.substring(0,coinsChunk.length() - 1);
-        url += (coinsChunk + "&tsyms=BTC&e=" + exchange);
+        url += (coinsChunk + "&tsyms=" + TSYM + "&e=" + exchange);
         Log.i(TAG, "url: " + url);
     }
 
@@ -51,7 +70,24 @@ public class PriceMultiFull extends Price {
             @Override
             public void onResponse(JSONObject response) {
 
-                //TODO: it might be best to perform SQl additions here
+                //Parse JSON response and add to WatchingCoinsDB
+                try {
+                    JSONObject body = (JSONObject) new JSONTokener(response.toString()).nextValue();
+
+                    //Loop through RAW and DISPLAY data of all coins
+                    for (String coin : coins) {
+                        ContentValues contentValues = new ContentValues();
+                        ContentValues rawContentValues = manageDbRows(contentValues, body.getJSONObject("RAW").getJSONObject(coin), "RAW");
+                        ContentValues totalContentValues = manageDbRows(rawContentValues, body.getJSONObject("DISPLAY").getJSONObject(coin), "DISPLAY");
+                        int callback = (int) db.insertWithOnConflict(TABLE_NAME, null, totalContentValues, SQLiteDatabase.CONFLICT_IGNORE);
+                        if(callback == -1){
+                            db.update(TABLE_NAME, contentValues, WatchingCoinsDb.RAW_FROMSYMBOL + "=?", primaryKeyValue);
+                        }
+                    }
+                } catch (JSONException e){
+                    Log.i(TAG, "JSONObjectRequest error: " + e.toString());
+                    e.printStackTrace();
+                }
                 Log.i(TAG, "Successful Response: " + response);
             }
         }, new Response.ErrorListener() {
@@ -63,7 +99,40 @@ public class PriceMultiFull extends Price {
                 Log.i(TAG, "Error: " + error.toString());
             }
         });
+
+        //Add request to the queue
         requestQueue.add(jsObjRequest);
     }
 
+    public ContentValues manageDbRows(ContentValues contentValues, JSONObject jsonObject, String prefix){
+
+        //Loop through JSON structure to gather data
+        try {
+
+            //Account for the TOSYMBOL nested JSON
+            JSONObject tsym = jsonObject.getJSONObject(TSYM);
+            Log.i(TAG, "tsym: " + tsym.toString());
+            Iterator<String> innerIter = tsym.keys();
+            while (innerIter.hasNext()) {
+                String innerKey = (String) innerIter.next();
+                try {
+                    String thisData = tsym.get(innerKey).toString();
+
+                    //Put in value proper column
+                    contentValues.put(prefix + "_" + innerKey, thisData);
+                    Log.i(TAG, "ContentValue added - " + prefix + "_" + innerKey + ": " + thisData);
+                    if(innerKey == "FROMSYMBOL"){
+                        primaryKeyValue[0] = thisData;
+                    }
+                } catch (JSONException e) {
+                    Log.i(TAG, "Error with inner coin loop: " + e.toString());
+                    e.printStackTrace();
+                }
+            }
+        } catch (JSONException e){
+            Log.i(TAG, "Error with tsym: " + e.toString());
+            e.printStackTrace();
+        }
+        return contentValues;
+    }
 }

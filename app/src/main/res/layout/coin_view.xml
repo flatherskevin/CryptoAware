@@ -65,7 +65,7 @@
                     android:id="@+id/watching_txt_changeValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="43.67%"
+                    android:text="---"
                     android:textColor="@color/positive"
                     android:layout_gravity="center_vertical"
                     android:textSize="24sp"
@@ -157,7 +157,7 @@
             android:layout_marginBottom="@dimen/row_margin">
 
             <LinearLayout
-                android:id="@+id/watching_ll_askLayout"
+                android:id="@+id/watching_ll_priceLayout"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -165,20 +165,20 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/watching_txt_askDescr"
+                    android:id="@+id/watching_txt_priceDescr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ask"
+                    android:text="Price"
                     android:textColor="@color/colorPrimaryDark"
                     android:layout_gravity="start"
                     android:textSize="12sp"
                     android:layout_marginStart="@dimen/coin_margin"/>
 
                 <TextView
-                    android:id="@+id/watching_txt_askValue"
+                    android:id="@+id/watching_txt_priceValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.00000002"
+                    android:text="---"
                     android:textColor="@color/coinViewPrimary"
                     android:layout_gravity="start"
                     android:textSize="18sp"
@@ -187,7 +187,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/watching_ll_bidLayout"
+                android:id="@+id/watching_ll_lastMarketLayout"
                 android:layout_height="match_parent"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -195,17 +195,17 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/watching_txt_bidDescr"
+                    android:id="@+id/watching_txt_lastMarketDescr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bid"
+                    android:text="Last Market"
                     android:textColor="@color/colorPrimaryDark"
                     android:layout_gravity="start"
                     android:textSize="12sp"
                     android:layout_marginStart="@dimen/coin_margin"/>
 
                 <TextView
-                    android:id="@+id/watching_txt_bidValue"
+                    android:id="@+id/watching_txt_lastMarketValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="---"

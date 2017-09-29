@@ -52,7 +52,7 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
     public static final String DISPLAY_CHANGEPCT24HOUR = "DISPLAY_CHANGEPCT24HOUR";
     public static final String DISPLAY_SUPPLY = "DISPLAY_SUPPLY";
     public static final String DISPLAY_MKTCAP = "DISPLAY_MKTCAP";
-    public static final String CREATE_TABLE = "CREATE TABLE "
+    public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "
             + TABLE_NAME                +   " ("
             + RAW_TYPE                  +   " INTEGER,"
             + RAW_MARKET                +   " TEXT,"
@@ -101,8 +101,6 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
     }
 
     public void onCreate(SQLiteDatabase db){
-        //TODO: remove DROP TABLE statement when testing table creation is complete
-        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL(CREATE_TABLE);
         Log.i(TAG, "Table created");
     }

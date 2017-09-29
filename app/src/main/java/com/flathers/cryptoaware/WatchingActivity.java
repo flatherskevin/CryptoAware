@@ -119,7 +119,6 @@ public class WatchingActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable(){
             public void run(){
                 renderCoinListView();
-                toast(mContext, "coin list updated");
                 handler.postDelayed(this, delay);
             }
         }, delay);

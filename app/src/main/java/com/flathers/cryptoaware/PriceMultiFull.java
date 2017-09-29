@@ -17,6 +17,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.ContentValues;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -24,8 +25,8 @@ import java.util.Iterator;
  */
 
 public class PriceMultiFull extends Price {
-    private final String[] coins;
-    private final String exchange;
+    private ArrayList<String> coins = new ArrayList<String>();
+    //private final String exchange;
     private static final String TAG = PriceMultiFull.class.getName();
     private static final String TSYM = "BTC";
     private Context mContext;
@@ -35,9 +36,9 @@ public class PriceMultiFull extends Price {
     private String[] primaryKeyValue = {""};
     private final String TABLE_NAME;
 
-    public PriceMultiFull(Context mContext, String[] coins, String exchange){
+    public PriceMultiFull(Context mContext, ArrayList<String> coins){
         this.coins = coins;
-        this.exchange = exchange;
+        //this.exchange = exchange;
         this.mContext = mContext;
         this.setURL();
         this.watchingCoinsDb = new WatchingCoinsDb(mContext);
@@ -57,7 +58,7 @@ public class PriceMultiFull extends Price {
             coinsChunk += (coin + ",");
         }
         coinsChunk = coinsChunk.substring(0,coinsChunk.length() - 1);
-        url += (coinsChunk + "&tsyms=" + TSYM + "&e=" + exchange);
+        url += (coinsChunk + "&tsyms=" + TSYM);
         Log.i(TAG, "url: " + url);
     }
 

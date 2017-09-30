@@ -123,8 +123,6 @@ public class WatchingActivity extends AppCompatActivity {
             }
         }, delay);
 
-
-
         Log.i(STATE_TAG, "onCreate");
     }
 
@@ -161,7 +159,14 @@ public class WatchingActivity extends AppCompatActivity {
             //Find list from activity_watching and set the adapter
             LinearLayout mainContainer = (LinearLayout) findViewById(R.id.watching_ll_mainContainer);
             ListView coinListView = (ListView) mainContainer.findViewById(R.id.watching_lv_coinList);
+
+            int listIndex = coinListView.getFirstVisiblePosition();
+            View mView = coinListView.getChildAt(0);
+            int listTop = (mView == null) ? 0 : (mView.getTop() - coinListView.getPaddingTop());
+
             coinListView.setAdapter(watchingAdapter);
+
+            coinListView.setSelectionFromTop(listIndex, listTop);
         }
     }
 

@@ -6,4 +6,6 @@
     <string name="relative_layout_coin_notification">Profit\nNotification</string>
     <string name="coin_selection_confirm">Select</string>
     <string name="coin_selection_cancel">Cancel</string>
+    <string name="settings_frequency">Update Frequency</string>
+    <string name="settings_notifications">Allow Notifications</string>
 </resources>

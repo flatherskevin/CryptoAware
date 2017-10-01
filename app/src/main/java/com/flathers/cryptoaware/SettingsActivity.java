@@ -8,23 +8,54 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
 public class SettingsActivity extends AppCompatActivity {
-    private static final String TAG = WatchingActivity.class.getName();
+    private static final String TAG = SettingsActivity.class.getName();
     final Context mContext = this;
+    static final boolean DEFAULT_ALLOW_NOTIFICATIONS = true;
+    static final int DEFAULT_UPDATE_TIMER = 7000; //milliseconds
+    CheckBox allowNotificationsCheckBox;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        editor = sharedPreferences.edit();
 
-        CheckBox notifcationsCheckBox = (CheckBox) findViewById(R.id.settings_chkbx_notifications);
+        //Initialize default variables
+        if(!sharedPreferences.contains("initialized")){
+            editor.putBoolean("initialized", true);
+            editor.putBoolean("allowNotifications", DEFAULT_ALLOW_NOTIFICATIONS);
+            editor.putInt("updateTimer", DEFAULT_UPDATE_TIMER);
+            editor.apply();
+            Log.i(TAG, "SharedPreferences initialized");
+        }
+
+        allowNotificationsCheckBox = (CheckBox) findViewById(R.id.settings_chkbx_notifications);
+        allowNotificationsCheckBox.setChecked(sharedPreferences.getBoolean("allowNotifications", DEFAULT_ALLOW_NOTIFICATIONS));
+        allowNotificationsCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(allowNotificationsCheckBox.isChecked()) {
+                    editor.putBoolean("allowNotifications", true);
+                    editor.apply();
+                    Log.i(TAG, "allowNotifications: true");
+                }else{
+                    editor.putBoolean("allowNotifications", false);
+                    editor.apply();
+                    Log.i(TAG, "allowNotifications: false");
+                }
+            }
+        });
     }
 
     @Override
@@ -106,6 +137,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        allowNotificationsCheckBox.setChecked(sharedPreferences.getBoolean("allowNotifications", DEFAULT_ALLOW_NOTIFICATIONS));
         Log.i(TAG, "onRestoreInstanceState");
     }
 

@@ -2,6 +2,7 @@ package com.flathers.cryptoaware;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -281,7 +282,6 @@ public class WatchingActivity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -292,9 +292,13 @@ public class WatchingActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         //Order in manner of importance for performance speed
         if (id == R.id.action_watching) {
+            //final Intent watchingIntent = new Intent(this, WatchingActivity.class);
+            //startActivity(watchingIntent);
             return true;
         }
         else if (id == R.id.action_settings) {
+            final Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
         else if (id == R.id.action_about) {

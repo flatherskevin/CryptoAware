@@ -3,8 +3,10 @@ package com.flathers.cryptoaware;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +46,8 @@ public class WatchingActivity extends AppCompatActivity {
     private ArrayList<String> userCoins = new ArrayList<String>();
     private CoinList coinList;
     private WatchingCoinsDb watchingCoinsDb;
+    private boolean allowNotifications; //SharedPreference
+    private int updateTimer; //SharedPreference
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +71,6 @@ public class WatchingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    //
                     ArrayList<String> newArrayList = coinList.getCoinArrayList();
 
                     final String[] coinsAvailable = newArrayList.toArray(new String[newArrayList.size()]);
@@ -115,16 +118,34 @@ public class WatchingActivity extends AppCompatActivity {
         });
 
         final Handler handler = new Handler();
-        final int delay = 10000; //milliseconds
+        getSharedPreferences();
 
         handler.postDelayed(new Runnable(){
             public void run(){
                 renderCoinListView();
-                handler.postDelayed(this, delay);
+                getSharedPreferences();
+                handler.postDelayed(this, updateTimer);
             }
-        }, delay);
+        }, updateTimer);
 
         Log.i(STATE_TAG, "onCreate");
+    }
+
+    private void getSharedPreferences(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //Initialize default variables
+        if(!sharedPreferences.contains("initialized")){
+            editor.putBoolean("initialized", true);
+            editor.putBoolean("allowNotifications", SettingsActivity.DEFAULT_ALLOW_NOTIFICATIONS);
+            editor.putInt("updateTimer", SettingsActivity.DEFAULT_UPDATE_TIMER);
+            editor.apply();
+            Log.i(TAG, "SharedPreferences initialized");
+        }
+
+        allowNotifications = sharedPreferences.getBoolean("allowNotifications", SettingsActivity.DEFAULT_ALLOW_NOTIFICATIONS);
+        updateTimer = sharedPreferences.getInt("updateTimer", SettingsActivity.DEFAULT_UPDATE_TIMER);
     }
 
     public void renderCoinListView(){

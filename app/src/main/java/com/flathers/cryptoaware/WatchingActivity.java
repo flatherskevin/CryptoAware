@@ -10,6 +10,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,6 +51,7 @@ public class WatchingActivity extends AppCompatActivity {
     private WatchingCoinsDb watchingCoinsDb;
     private boolean allowNotifications; //SharedPreference
     private int updateTimer; //SharedPreference
+    private String[] coinsAvailableSelection; //Used for searching coins available to add
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,31 +75,78 @@ public class WatchingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    ArrayList<String> newArrayList = coinList.getCoinArrayList();
+                    final ArrayList<String> newArrayList = coinList.getCoinArrayList();
 
                     final String[] coinsAvailable = newArrayList.toArray(new String[newArrayList.size()]);
+
+                    //Allow for proper string list searching on selection if search field is used
+                    coinsAvailableSelection = coinsAvailable;
+
 
                     //Create a dialog to choose coins from
                     final Dialog dialog = new Dialog(mContext);
                     dialog.setContentView(R.layout.coin_selection);
                     dialog.setTitle("Add Coin");
+                    EditText edttxtSearch = (EditText) dialog.findViewById(R.id.watching_edttxt_searchField);
                     Button btnSelect = (Button) dialog.findViewById(R.id.watching_btn_confirm);
                     Button btnCancel = (Button) dialog.findViewById(R.id.watching_btn_cancel);
 
                     //Usage of a NumberPicker is satisfactory for now to choose coins
-                    //TODO: add a search bar since there are so many coins
                     final NumberPicker selector = (NumberPicker) dialog.findViewById(R.id.watching_numpkr_selector);
                     selector.setMinValue(0);
-                    selector.setMaxValue(coinsAvailable.length - 1);
-                    Arrays.sort(coinsAvailable);
-                    selector.setDisplayedValues(coinsAvailable);
+
+                    //Error handle the NumberPicker in case of error gathering CoinList
+                    try{
+                        selector.setMaxValue(coinsAvailable.length - 1);
+                        Arrays.sort(coinsAvailable);
+                        selector.setDisplayedValues(coinsAvailable);
+                    }catch (Exception e){
+                        selector.setDisplayedValues(null);
+                        selector.setMaxValue(0);
+                        selector.setDisplayedValues(new String[] {"Error"});
+                    }
                     selector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+
+                    edttxtSearch.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            String editText = editable.toString();
+                            ArrayList<String> searchArrayList = new ArrayList<String>();
+                            for(String coinAvail : coinsAvailable){
+                                if(coinAvail.toLowerCase().contains(editText.toLowerCase())){
+                                    searchArrayList.add(coinAvail);
+                                }
+                            }
+                            final String[] coinsAvailableSearch = searchArrayList.toArray(new String[searchArrayList.size()]);
+                            try{
+                                selector.setDisplayedValues(null);
+                                selector.setMaxValue(coinsAvailableSearch.length - 1);
+                                Arrays.sort(coinsAvailableSearch);
+                                selector.setDisplayedValues(coinsAvailableSearch);
+                            }catch (Exception e){
+                                selector.setDisplayedValues(null);
+                                selector.setMaxValue(0);
+                                selector.setDisplayedValues(new String[] {"No coins found"});
+                            }
+                            coinsAvailableSelection = coinsAvailableSearch;
+                        }
+                    });
 
                     //Add selected coin to userCoins on clicking select
                     btnSelect.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            userCoins.add(coinsAvailable[selector.getValue()]);
+                            userCoins.add(coinsAvailableSelection[selector.getValue()]);
                             renderCoinListView();
                             dialog.dismiss();
                         }
@@ -122,8 +173,14 @@ public class WatchingActivity extends AppCompatActivity {
 
         handler.postDelayed(new Runnable(){
             public void run(){
+
+                //Render the coin list
                 renderCoinListView();
+
+                //Check SharedPreferences in case settings have been changed
                 getSharedPreferences();
+
+                //Recursive call after updateTimer SharedPreference delay
                 handler.postDelayed(this, updateTimer);
             }
         }, updateTimer);
@@ -145,6 +202,8 @@ public class WatchingActivity extends AppCompatActivity {
         }
 
         allowNotifications = sharedPreferences.getBoolean("allowNotifications", SettingsActivity.DEFAULT_ALLOW_NOTIFICATIONS);
+
+        //Used for API update period
         updateTimer = sharedPreferences.getInt("updateTimer", SettingsActivity.DEFAULT_UPDATE_TIMER);
     }
 
@@ -292,8 +351,6 @@ public class WatchingActivity extends AppCompatActivity {
 
             return rowView;
         }
-
-
     }
 
     @Override

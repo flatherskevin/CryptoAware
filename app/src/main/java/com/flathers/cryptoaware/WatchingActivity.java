@@ -87,6 +87,8 @@ public class WatchingActivity extends AppCompatActivity {
                     final Dialog dialog = new Dialog(mContext);
                     dialog.setContentView(R.layout.coin_selection);
                     dialog.setTitle("Add Coin");
+
+                    //Get search field and both buttons
                     EditText edttxtSearch = (EditText) dialog.findViewById(R.id.watching_edttxt_searchField);
                     Button btnSelect = (Button) dialog.findViewById(R.id.watching_btn_confirm);
                     Button btnCancel = (Button) dialog.findViewById(R.id.watching_btn_cancel);
@@ -107,17 +109,15 @@ public class WatchingActivity extends AppCompatActivity {
                     }
                     selector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
+                    //Every time anything is entered into the text field, run a search query
                     edttxtSearch.addTextChangedListener(new TextWatcher() {
                         @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                        }
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2){}
 
                         @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2){}
 
-                        }
-
+                        //Best to do query after text has been changed
                         @Override
                         public void afterTextChanged(Editable editable) {
                             String editText = editable.toString();
@@ -128,6 +128,8 @@ public class WatchingActivity extends AppCompatActivity {
                                 }
                             }
                             final String[] coinsAvailableSearch = searchArrayList.toArray(new String[searchArrayList.size()]);
+
+                            //Null out display values and refresh NumberPicker
                             try{
                                 selector.setDisplayedValues(null);
                                 selector.setMaxValue(coinsAvailableSearch.length - 1);
@@ -141,7 +143,6 @@ public class WatchingActivity extends AppCompatActivity {
                             coinsAvailableSelection = coinsAvailableSearch;
                         }
                     });
-
                     //Add selected coin to userCoins on clicking select
                     btnSelect.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -163,7 +164,7 @@ public class WatchingActivity extends AppCompatActivity {
                     dialog.create();
                     dialog.show();
                 }catch(Exception e){
-                    Log.i(TAG, e.toString() + e.getStackTrace());
+                    Log.i(TAG, e.toString());
                 }
             }
         });
@@ -255,16 +256,14 @@ public class WatchingActivity extends AppCompatActivity {
     private class CoinAdapter extends ArrayAdapter<String> {
         private final Context context;
         private final ArrayList<String> coins;
-
-        //TODO: coins string array will be come far more complex will addition of API
+        
         public CoinAdapter(Context context, ArrayList<String> coins) {
             super(context, R.layout.coin_view, coins);
             this.context = context;
             this.coins = coins;
         }
 
-        //Generates a custoom ListView item for each item in coins
-        //TODO: customize for full extent of API parameters
+        //Generates a custom ListView item for each item in userCoins
         public View getView(final int position, View convertView, ViewGroup parent) {
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

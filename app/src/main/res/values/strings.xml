@@ -9,4 +9,12 @@
     <string name="settings_frequency">Update Frequency</string>
     <string name="settings_notifications">Allow Notifications</string>
     <string name="coin_selection_hint">Search coins</string>
+    <string name="coin_info_deposit">Transaction (BTC)</string>
+    <string name="coin_info_price">Market Price</string>
+    <string name="coin_info_symbol">(BTC)</string>
+    <string name="coin_info_market">Market</string>
+    <string name="coin_info_date">Date</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

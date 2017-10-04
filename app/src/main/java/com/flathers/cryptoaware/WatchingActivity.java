@@ -256,7 +256,7 @@ public class WatchingActivity extends AppCompatActivity {
     private class CoinAdapter extends ArrayAdapter<String> {
         private final Context context;
         private final ArrayList<String> coins;
-        
+
         public CoinAdapter(Context context, ArrayList<String> coins) {
             super(context, R.layout.coin_view, coins);
             this.context = context;

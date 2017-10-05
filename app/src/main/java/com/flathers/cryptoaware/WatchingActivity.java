@@ -179,6 +179,7 @@ public class WatchingActivity extends AppCompatActivity {
                 renderCoinListView();
 
                 //Check SharedPreferences in case settings have been changed
+                //TODO: clean this up, this doesn't need to happen this repetatively
                 getSharedPreferences();
 
                 //Recursive call after updateTimer SharedPreference delay
@@ -236,7 +237,7 @@ public class WatchingActivity extends AppCompatActivity {
             PriceMultiFull priceMultiFull = new PriceMultiFull(mContext, userCoins);
             priceMultiFull.sendRequest();
 
-            CoinAdapter watchingAdapter = new CoinAdapter(this, userCoins);
+            CoinAdapter watchingAdapter = new CoinAdapter(mContext, userCoins);
 
             //Find list from activity_watching and set the adapter
             LinearLayout mainContainer = (LinearLayout) findViewById(R.id.watching_ll_mainContainer);
@@ -344,6 +345,7 @@ public class WatchingActivity extends AppCompatActivity {
                 changeValue.setText(display_changePct24Hour + "%");
                 priceValue.setText(c.getString(c.getColumnIndexOrThrow(watchingCoinsDb.DISPLAY_PRICE)));
                 lastMarketValue.setText(c.getString(c.getColumnIndexOrThrow(watchingCoinsDb.RAW_LASTMARKET)));
+
                 c.close();
             }
             Log.i(COIN_VIEW, "Coin view created for " + coins.get(position));

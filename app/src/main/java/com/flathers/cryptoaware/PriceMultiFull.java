@@ -33,7 +33,7 @@ public class PriceMultiFull extends Price {
     private String url = "https://min-api.cryptocompare.com/data/pricemultifull?";
     private WatchingCoinsDb watchingCoinsDb;
     private SQLiteDatabase db;
-    private String[] primaryKeyValue = {""};
+    private String primaryKeyValue;
     private final String TABLE_NAME;
 
     public PriceMultiFull(Context mContext, ArrayList<String> coins){
@@ -44,7 +44,7 @@ public class PriceMultiFull extends Price {
         this.watchingCoinsDb = new WatchingCoinsDb(mContext);
         this.db = watchingCoinsDb.getWritableDatabase();
         //this.contentValues = new ContentValues();
-        this.primaryKeyValue[0] = "";
+        this.primaryKeyValue = "";
         this.TABLE_NAME = watchingCoinsDb.TABLE_NAME;
     }
 
@@ -82,7 +82,7 @@ public class PriceMultiFull extends Price {
                         ContentValues totalContentValues = manageDbRows(rawContentValues, body.getJSONObject("DISPLAY").getJSONObject(coin), "DISPLAY");
                         int callback = (int) db.insertWithOnConflict(TABLE_NAME, null, totalContentValues, SQLiteDatabase.CONFLICT_IGNORE);
                         if(callback == -1){
-                            db.update(TABLE_NAME, contentValues, WatchingCoinsDb.RAW_FROMSYMBOL + "=?", primaryKeyValue);
+                            db.update(TABLE_NAME, totalContentValues, WatchingCoinsDb.RAW_FROMSYMBOL + "='" + primaryKeyValue +"'", null);
                         }
                     }
                 } catch (JSONException e){
@@ -119,11 +119,13 @@ public class PriceMultiFull extends Price {
                 try {
                     String thisData = tsym.get(innerKey).toString();
 
+                    String compoundColumn = prefix + "_" + innerKey;
+
                     //Put in value proper column
-                    contentValues.put(prefix + "_" + innerKey, thisData);
-                    Log.i(TAG, "ContentValue added - " + prefix + "_" + innerKey + ": " + thisData);
-                    if(innerKey == "FROMSYMBOL"){
-                        primaryKeyValue[0] = thisData;
+                    contentValues.put(compoundColumn, thisData);
+                    Log.i(TAG, "ContentValue added - " + compoundColumn + ": " + thisData);
+                    if(compoundColumn.equals("RAW_FROMSYMBOL")){
+                        primaryKeyValue = thisData;
                     }
                 } catch (JSONException e) {
                     Log.i(TAG, "Error with inner coin loop: " + e.toString());

@@ -43,11 +43,11 @@ public class SelectionDialog extends Dialog {
         btnSelect = (Button) findViewById(R.id.watching_btn_confirm);
         btnCancel = (Button) findViewById(R.id.watching_btn_cancel);
 
-        //Usage of a NumberPicker is satisfactory for now to choose coins
+        //Usage of a NumberPicker is satisfactory for now to choose selection
         selector = (NumberPicker) findViewById(R.id.watching_numpkr_selector);
         selector.setMinValue(0);
 
-        //Error handle the NumberPicker in case of error gathering CoinList
+        //Error handle the NumberPicker in case of error gathering SelectionList
         try{
             selector.setMaxValue(mList.length - 1);
             Arrays.sort(mList);
@@ -72,29 +72,29 @@ public class SelectionDialog extends Dialog {
             public void afterTextChanged(Editable editable) {
                 String editText = editable.toString();
                 ArrayList<String> searchArrayList = new ArrayList<String>();
-                for(String coinAvail : mList){
-                    if(coinAvail.toLowerCase().contains(editText.toLowerCase())){
-                        searchArrayList.add(coinAvail);
+                for(String mListAvail : mList){
+                    if(mListAvail.toLowerCase().contains(editText.toLowerCase())){
+                        searchArrayList.add(mListAvail);
                     }
                 }
-                final String[] coinsAvailableSearch = searchArrayList.toArray(new String[searchArrayList.size()]);
+                final String[] mListAvailableSearch = searchArrayList.toArray(new String[searchArrayList.size()]);
 
                 //Null out display values and refresh NumberPicker
                 try{
                     selector.setDisplayedValues(null);
-                    selector.setMaxValue(coinsAvailableSearch.length - 1);
-                    Arrays.sort(coinsAvailableSearch);
-                    selector.setDisplayedValues(coinsAvailableSearch);
+                    selector.setMaxValue(mListAvailableSearch.length - 1);
+                    Arrays.sort(mListAvailableSearch);
+                    selector.setDisplayedValues(mListAvailableSearch);
                 }catch (Exception e){
                     selector.setDisplayedValues(null);
                     selector.setMaxValue(0);
                     selector.setDisplayedValues(new String[] {"No coins found"});
                 }
                 //Allow for proper string list searching on selection if search field is used
-                mListAvailable = coinsAvailableSearch;
+                mListAvailable = mListAvailableSearch;
             }
         });
-        //Add selected coin to userCoins on clicking select
+        //OnClickListener does nothing until overridden
         btnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

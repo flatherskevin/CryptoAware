@@ -79,90 +79,18 @@ public class WatchingActivity extends AppCompatActivity {
 
                     final String[] coinsAvailable = newArrayList.toArray(new String[newArrayList.size()]);
 
-                    //Allow for proper string list searching on selection if search field is used
-                    coinsAvailableSelection = coinsAvailable;
-
-
-                    //Create a dialog to choose coins from
-                    final Dialog dialog = new Dialog(mContext);
-                    dialog.setContentView(R.layout.coin_selection);
-                    dialog.setTitle("Add Coin");
-
-                    //Get search field and both buttons
-                    EditText edttxtSearch = (EditText) dialog.findViewById(R.id.watching_edttxt_searchField);
-                    Button btnSelect = (Button) dialog.findViewById(R.id.watching_btn_confirm);
-                    Button btnCancel = (Button) dialog.findViewById(R.id.watching_btn_cancel);
-
-                    //Usage of a NumberPicker is satisfactory for now to choose coins
-                    final NumberPicker selector = (NumberPicker) dialog.findViewById(R.id.watching_numpkr_selector);
-                    selector.setMinValue(0);
-
-                    //Error handle the NumberPicker in case of error gathering CoinList
-                    try{
-                        selector.setMaxValue(coinsAvailable.length - 1);
-                        Arrays.sort(coinsAvailable);
-                        selector.setDisplayedValues(coinsAvailable);
-                    }catch (Exception e){
-                        selector.setDisplayedValues(null);
-                        selector.setMaxValue(0);
-                        selector.setDisplayedValues(new String[] {"Error"});
-                    }
-                    selector.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-
-                    //Every time anything is entered into the text field, run a search query
-                    edttxtSearch.addTextChangedListener(new TextWatcher() {
+                    //Create a SelectionDialog to add coins
+                    SelectionDialog coinSelection = new SelectionDialog(mContext, coinsAvailable){
                         @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2){}
-
-                        @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2){}
-
-                        //Best to do query after text has been changed
-                        @Override
-                        public void afterTextChanged(Editable editable) {
-                            String editText = editable.toString();
-                            ArrayList<String> searchArrayList = new ArrayList<String>();
-                            for(String coinAvail : coinsAvailable){
-                                if(coinAvail.toLowerCase().contains(editText.toLowerCase())){
-                                    searchArrayList.add(coinAvail);
-                                }
-                            }
-                            final String[] coinsAvailableSearch = searchArrayList.toArray(new String[searchArrayList.size()]);
-
-                            //Null out display values and refresh NumberPicker
-                            try{
-                                selector.setDisplayedValues(null);
-                                selector.setMaxValue(coinsAvailableSearch.length - 1);
-                                Arrays.sort(coinsAvailableSearch);
-                                selector.setDisplayedValues(coinsAvailableSearch);
-                            }catch (Exception e){
-                                selector.setDisplayedValues(null);
-                                selector.setMaxValue(0);
-                                selector.setDisplayedValues(new String[] {"No coins found"});
-                            }
-                            coinsAvailableSelection = coinsAvailableSearch;
-                        }
-                    });
-                    //Add selected coin to userCoins on clicking select
-                    btnSelect.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            userCoins.add(coinsAvailableSelection[selector.getValue()]);
+                        public void onSelectListener(){
+                            userCoins.add(mListAvailable[selector.getValue()]);
                             renderCoinListView();
-                            dialog.dismiss();
+                            dismiss();
                         }
-                    });
-
-                    //Dismiss dialog if on clicking cancel
-                    btnCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
-
-                    dialog.create();
-                    dialog.show();
+                    };
+                    coinSelection.setTitle("Add Coin");
+                    coinSelection.create();
+                    coinSelection.show();
                 }catch(Exception e){
                     Log.i(TAG, e.toString());
                 }

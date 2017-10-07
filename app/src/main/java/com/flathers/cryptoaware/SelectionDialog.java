@@ -36,7 +36,7 @@ public class SelectionDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.coin_selection);
+        setContentView(R.layout.selection_dialog);
 
         //Get search field and both buttons
         edttxtSearch = (EditText) findViewById(R.id.watching_edttxt_searchField);
@@ -50,7 +50,6 @@ public class SelectionDialog extends Dialog {
         //Error handle the NumberPicker in case of error gathering SelectionList
         try{
             selector.setMaxValue(mList.length - 1);
-            Arrays.sort(mList);
             selector.setDisplayedValues(mList);
         }catch (Exception e){
             selector.setDisplayedValues(null);
@@ -83,7 +82,7 @@ public class SelectionDialog extends Dialog {
                 try{
                     selector.setDisplayedValues(null);
                     selector.setMaxValue(mListAvailableSearch.length - 1);
-                    Arrays.sort(mListAvailableSearch);
+
                     selector.setDisplayedValues(mListAvailableSearch);
                 }catch (Exception e){
                     selector.setDisplayedValues(null);
@@ -117,5 +116,18 @@ public class SelectionDialog extends Dialog {
     public void onCancelListener(){
         //Override this perform custom operation
         dismiss();
+    }
+
+
+    public void hideSearchBar(){
+        //Makes sure to call this function after SelectionDialog.create()
+        //Removes search field
+        edttxtSearch.setVisibility(View.GONE);
+    }
+
+    public void setWrapSelectorWheel(Boolean state){
+        //Makes sure to call this function after SelectionDialog.create()
+        //Prevents endless scrolling in NumberPicker
+        selector.setWrapSelectorWheel(state);
     }
 }

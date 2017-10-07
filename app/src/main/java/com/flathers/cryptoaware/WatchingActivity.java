@@ -1,6 +1,6 @@
 package com.flathers.cryptoaware;
 
-import android.app.Dialog;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,23 +10,18 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.util.Log;
-import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -78,6 +73,8 @@ public class WatchingActivity extends AppCompatActivity {
                     final ArrayList<String> newArrayList = coinList.getCoinArrayList();
 
                     final String[] coinsAvailable = newArrayList.toArray(new String[newArrayList.size()]);
+
+                    Arrays.sort(coinsAvailable);
 
                     //Create a SelectionDialog to add coins
                     SelectionDialog coinSelection = new SelectionDialog(mContext, coinsAvailable){

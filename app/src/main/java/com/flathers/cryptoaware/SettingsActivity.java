@@ -2,6 +2,7 @@ package com.flathers.cryptoaware;
 
 import android.content.Context;
 import android.content.Intent;
+import android.icu.text.Collator;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,19 +10,26 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
+import static java.lang.Integer.parseInt;
+
 public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = SettingsActivity.class.getName();
     final Context mContext = this;
     static final boolean DEFAULT_ALLOW_NOTIFICATIONS = true;
-    static final int DEFAULT_UPDATE_TIMER = 7000; //milliseconds
+    static final int DEFAULT_UPDATE_TIMER = 5000; //milliseconds
     CheckBox allowNotificationsCheckBox;
+    Button frequencyButton;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    private static String SUFFIX = " seconds";
+    private static int MULTIPLIER = 1000;
+    private static String[] times = {3 + SUFFIX, 5 + SUFFIX, 10 + SUFFIX, 15 + SUFFIX, 30 + SUFFIX, 60 + SUFFIX};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,31 @@ public class SettingsActivity extends AppCompatActivity {
                     editor.apply();
                     Log.i(TAG, "allowNotifications: false");
                 }
+            }
+        });
+
+        frequencyButton = (Button) findViewById(R.id.settings_btn_frequency);
+        frequencyButton.setText(sharedPreferences.getInt("updateTimer", DEFAULT_UPDATE_TIMER) / MULTIPLIER + SUFFIX);
+        frequencyButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                //Create a SelectionDialog to add coins
+                SelectionDialog coinSelection = new SelectionDialog(mContext, times){
+                    @Override
+                    public void onSelectListener(){
+                        int result = parseInt(mListAvailable[selector.getValue()].replace(SUFFIX, "")) * MULTIPLIER;
+                        editor.putInt("updateTimer", result);
+                        editor.apply();
+
+                        frequencyButton.setText(sharedPreferences.getInt("updateTimer", DEFAULT_UPDATE_TIMER) / MULTIPLIER + SUFFIX);
+                        dismiss();
+                    }
+                };
+                coinSelection.setTitle("Set Update Time (seconds)");
+                coinSelection.create();
+                coinSelection.hideSearchBar();
+                coinSelection.setWrapSelectorWheel(false);
+                coinSelection.show();
             }
         });
     }

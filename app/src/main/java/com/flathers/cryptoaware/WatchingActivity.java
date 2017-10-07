@@ -2,6 +2,7 @@ package com.flathers.cryptoaware;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -44,6 +45,8 @@ public class WatchingActivity extends AppCompatActivity {
     private ArrayList<String> userCoins = new ArrayList<String>();
     private CoinList coinList;
     private WatchingCoinsDb watchingCoinsDb;
+    SQLiteDatabase dbRead;
+    SQLiteDatabase dbWrite;
     private boolean allowNotifications; //SharedPreference
     private int updateTimer; //SharedPreference
     private String[] coinsAvailableSelection; //Used for searching coins available to add
@@ -57,6 +60,8 @@ public class WatchingActivity extends AppCompatActivity {
 
         //Make sure database is setup on install
         watchingCoinsDb = new WatchingCoinsDb(mContext);
+        dbRead = watchingCoinsDb.getReadableDatabase();
+        dbWrite = watchingCoinsDb.getWritableDatabase();
 
         //Prepare initial coinList
         coinList = new CoinList(mContext);
@@ -135,10 +140,9 @@ public class WatchingActivity extends AppCompatActivity {
     }
 
     public void renderCoinListView(){
-        //Update puser coins based on db
-        SQLiteDatabase db = watchingCoinsDb.getReadableDatabase();
+        //Update puser coins based on dbRead
         String[] cols = {watchingCoinsDb.RAW_FROMSYMBOL};
-        Cursor c = db.query(
+        Cursor c = dbRead.query(
                 watchingCoinsDb.TABLE_NAME,
                 cols,
                 null,
@@ -158,7 +162,7 @@ public class WatchingActivity extends AppCompatActivity {
         }
 
         if(userCoins.size() > 0) {
-            //Update current information in db
+            //Update current information in dbRead
             PriceMultiFull priceMultiFull = new PriceMultiFull(mContext, userCoins);
             priceMultiFull.sendRequest();
 
@@ -241,11 +245,11 @@ public class WatchingActivity extends AppCompatActivity {
             nameValue.setText(coins.get(position));
 
             //load states of coins from SQL database
-            SQLiteDatabase db = watchingCoinsDb.getReadableDatabase();
+
             String[] cols = {watchingCoinsDb.DISPLAY_CHANGEPCT24HOUR,
                     watchingCoinsDb.DISPLAY_PRICE,
                     watchingCoinsDb.RAW_LASTMARKET};
-            Cursor c = db.query(
+            Cursor c = dbRead.query(
                     watchingCoinsDb.TABLE_NAME,
                     cols,
                     "RAW_FROMSYMBOL=?",
@@ -274,6 +278,54 @@ public class WatchingActivity extends AppCompatActivity {
                 c.close();
             }
             Log.i(COIN_VIEW, "Coin view created for " + coins.get(position));
+
+            //Long clicking a row will allow a user to delete the coin and all data
+            //COnfirmation box is necessary for human error
+            rowView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    AlertDialog.Builder confirmation = new AlertDialog.Builder(mContext);
+                    confirmation.setTitle("Confirmation");
+                    confirmation.setMessage("Do you really want to delete all data for " + coins.get(position) + "?");
+                    confirmation.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.i(TAG, "Begin coin deletion for: " + coins.get(position));
+
+                            //TODO: Delete all transactions from transactions table
+                            //Must happen before watching_coins deletion due to FK reference for PK
+                            Log.i(TAG, "Transactions deleted for: " + coins.get(position));
+
+                            //Delete row from watching_coins table
+                            dbWrite.delete(WatchingCoinsDb.TABLE_NAME, WatchingCoinsDb.RAW_FROMSYMBOL + "=?", new String[]{coins.get(position)});
+                            Log.i(TAG, "PriceMultiFull deleted for: " + coins.get(position));
+
+                            //Delete item from ListView
+                            remove(coins.get(position));
+
+                            //Re-render the coin view
+                            notifyDataSetChanged();
+                            renderCoinListView();
+
+                            dialog.dismiss();
+                        }
+                    });
+
+                    confirmation.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // Do nothing
+                            dialog.dismiss();
+                        }
+                    });
+
+                    confirmation.create();
+                    confirmation.show();
+                    return false;
+                }
+            });
 
             return rowView;
         }
@@ -346,6 +398,7 @@ public class WatchingActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        dbRead.close();
         Log.i(STATE_TAG, "onDestroy");
     }
 

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "com.flathers.cryptoaware"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode buildVersionCode()
         versionName version

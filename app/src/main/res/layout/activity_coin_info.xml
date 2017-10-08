@@ -1,15 +1,18 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.flathers.cryptoaware.CoinInfo"
-    android:orientation="vertical">
+    tools:context="com.flathers.cryptoaware.CoinInfoActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="344dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -17,15 +20,16 @@
             android:orientation="horizontal">
 
             <EditText
+                android:id="@+id/coinInfo_edttxt_coinQty"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/coin_info_deposit"
-                android:layout_weight="0.7"/>
+                android:layout_weight="1.0"/>
 
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/coinInfo_txt_coinQty"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
                 android:text="@string/coin_info_symbol"/>
 
         </LinearLayout>
@@ -36,46 +40,32 @@
             android:orientation="horizontal">
 
             <EditText
+                android:id="@+id/coininfo_edttxt_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/coin_info_price"
-                android:layout_weight="0.7"/>
+                android:layout_weight="0.5"/>
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/coin_info_symbol"/>
+
+            <Button
+                android:id="@+id/coinInfo_btn_date"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="@string/coin_info_symbol"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="@string/coin_info_market"/>
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
                 android:text="@string/coin_info_date"/>
 
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/watching_imgbtn_addCoin"
+            android:id="@+id/coinInfo_imgbtn_addTransaction"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".15"
+            android:layout_height="wrap_content"
             app:srcCompat="@android:drawable/ic_menu_add" />
 
     </LinearLayout>
 
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

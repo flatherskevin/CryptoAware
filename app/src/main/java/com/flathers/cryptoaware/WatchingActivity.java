@@ -1,6 +1,5 @@
 package com.flathers.cryptoaware;
 
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -227,17 +228,9 @@ public class WatchingActivity extends AppCompatActivity {
                     //Log the button that was clicked
                     Log.i(BUTTON_CLICK, (coins.get(position) + " edit properties"));
 
-                    //TODO: Remove the alert dialog, and replace with properties fragment or activity
-                    //Create the alert dialog builder
-                    //This entire dialog will be removed and replaced with a fragment
-                    //It currently serves as a POC of OnClickListener
-                    final AlertDialog.Builder futureDevelopment = new AlertDialog.Builder(context);
-                    futureDevelopment.setTitle("AlertDialog");
-                    futureDevelopment.setMessage("Future development space for " + coins.get(position));
-                    futureDevelopment.setCancelable(true);
+                    final Intent coinInfoIntent = new Intent(mContext, CoinInfoActivity.class);
+                    startActivity(coinInfoIntent);
 
-                    AlertDialog alert = futureDevelopment.create();
-                    alert.show();
                 }
             });
 

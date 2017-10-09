@@ -118,6 +118,8 @@ public class SettingsActivity extends AppCompatActivity {
             return true;
         }
         else if (id == R.id.action_about) {
+            final Intent aboutIntent = new Intent(this, AboutActivity.class);
+            startActivity(aboutIntent);
             return true;
         }
 

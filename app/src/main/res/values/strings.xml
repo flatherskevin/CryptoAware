@@ -14,6 +14,9 @@
     <string name="coin_info_symbol">(BTC)</string>
     <string name="coin_info_market">Market</string>
     <string name="coin_info_date">Date</string>
+    <string name="about_title">CryptoAware</string>
+    <string name="about_subtitle">The Cryptocurrency Awareness App</string>
+    <string name="about_cryptocompare_title">Big thanks to the fantastic team over at CryptoCompare.com for their free API. This project would not be possible without them!</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

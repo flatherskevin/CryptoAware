@@ -9,11 +9,13 @@
     <string name="settings_frequency">Update Frequency</string>
     <string name="settings_notifications">Allow Notifications</string>
     <string name="coin_selection_hint">Search coins</string>
-    <string name="coin_info_deposit">Transaction</string>
+    <string name="coin_info_deposit">Coin Quantity</string>
     <string name="coin_info_price">Market Price</string>
     <string name="coin_info_symbol">(BTC)</string>
     <string name="coin_info_market">Market</string>
     <string name="coin_info_date">Date</string>
+    <string name="coin_info_buy">Buy</string>
+    <string name="coin_info_sell">Sell</string>
     <string name="about_title">CryptoAware</string>
     <string name="about_subtitle">The Cryptocurrency Awareness App</string>
     <string name="about_cryptocompare_title">Big thanks to the fantastic team over at CryptoCompare.com for their free API. This project would not be possible without them!</string>

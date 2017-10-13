@@ -42,12 +42,25 @@ public class CoinInfoActivity extends AppCompatActivity {
         mMonth = calendar.get(Calendar.MONTH);
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
-        RadioGroup buySellRadioGroup = (RadioGroup) findViewById(R.id.coinInfo_rgrp_buySell);
+        final RadioGroup buySellRadioGroup = (RadioGroup) findViewById(R.id.coinInfo_rgrp_buySell);
         EditText coinQtyEditText = (EditText) findViewById(R.id.coinInfo_edttxt_coinQty);
         EditText priceEditText = (EditText) findViewById(R.id.coininfo_edttxt_price);
         final Button dateButton = (Button) findViewById(R.id.coinInfo_btn_date);
         ImageButton addButton = (ImageButton) findViewById(R.id.coinInfo_imgbtn_addTransaction);
 
+        //Get default state of the RadioGroup
+        switch(buySellRadioGroup.getCheckedRadioButtonId()){
+            case R.id.coinInfo_rbtn_buy:
+                buySell = BUY_VALUE;
+                break;
+            case R.id.coinInfo_rbtn_sell:
+                buySell = SELL_VALUE;
+                break;
+            default:
+                buySell = BUY_VALUE;
+        }
+
+        //Set a listener for when the RadioGroup changes
         buySellRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
 
             @Override
@@ -64,9 +77,6 @@ public class CoinInfoActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
 
         dateButton.setOnClickListener(new View.OnClickListener() {
             @Override

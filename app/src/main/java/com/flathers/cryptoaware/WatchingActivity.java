@@ -42,7 +42,6 @@ public class WatchingActivity extends AppCompatActivity {
     private static final String STATE_TAG = "StateChange";
     private static final String COIN_VIEW = "CoinView";
     private static final String BUTTON_CLICK = "ButtonClick";
-    private String[] userMarkets = new String[] {"Kraken"};
     private ArrayList<String> userCoins = new ArrayList<String>();
     private CoinList coinList;
     private WatchingCoinsDb watchingCoinsDb;
@@ -50,7 +49,8 @@ public class WatchingActivity extends AppCompatActivity {
     SQLiteDatabase dbWrite;
     private boolean allowNotifications; //SharedPreference
     private int updateTimer; //SharedPreference
-    private String[] coinsAvailableSelection; //Used for searching coins available to add
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,10 @@ public class WatchingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_watching);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Setup sharedPreferences
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        editor = sharedPreferences.edit();
 
         //Make sure database is setup on install
         watchingCoinsDb = new WatchingCoinsDb(mContext);
@@ -228,6 +232,9 @@ public class WatchingActivity extends AppCompatActivity {
                     //Log the button that was clicked
                     Log.i(BUTTON_CLICK, (coins.get(position) + " edit properties"));
 
+                    editor.putString("selectedCoin", coins.get(position));
+                    editor.apply();
+
                     final Intent coinInfoIntent = new Intent(mContext, CoinInfoActivity.class);
                     startActivity(coinInfoIntent);
 
@@ -236,6 +243,9 @@ public class WatchingActivity extends AppCompatActivity {
 
             //Change text to that of the current coin
             nameValue.setText(coins.get(position));
+
+            //Display wallet price
+            walletValue.setText(Double.toString(calcWallet(coins.get(position))));
 
             //load states of coins from SQL database
 
@@ -324,6 +334,29 @@ public class WatchingActivity extends AppCompatActivity {
         }
     }
 
+    private double calcWallet(String cFind){
+        String[] cols = {TransactionsDb.TOTAL_BTC};
+        double wallet = 0;
+
+        TransactionsDb transactionsDb = new TransactionsDb(mContext);
+        SQLiteDatabase dbReadTransactions = transactionsDb.getReadableDatabase();
+        Cursor c = dbReadTransactions.query(
+                transactionsDb.TABLE_NAME,
+                cols,
+                "RAW_FROMSYMBOL=?",
+                new String[]{cFind},
+                null,
+                null,
+                null
+        );
+
+        while(c.moveToNext() && c != null) {
+            wallet += c.getDouble(c.getColumnIndexOrThrow(transactionsDb.TOTAL_BTC));
+        }
+
+        return wallet;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -394,6 +427,7 @@ public class WatchingActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         dbRead.close();
+        dbWrite.close();
         Log.i(STATE_TAG, "onDestroy");
     }
 

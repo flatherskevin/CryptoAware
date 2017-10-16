@@ -34,6 +34,11 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
     public static final String RAW_CHANGEPCT24HOUR = "RAW_CHANGEPCT24HOUR";
     public static final String RAW_SUPPLY = "RAW_SUPPLY";
     public static final String RAW_MKTCAP = "RAW_MKTCAP";
+    public static final String RAW_OPENDAY = "RAW_OPENDAY";
+    public static final String RAW_LOWDAY = "RAW_LOWDAY";
+    public static final String RAW_HIGHDAY = "RAW_HIGHDAY";
+    public static final String RAW_VOLUMEDAY = "RAW_VOLUMEDAY";
+    public static final String RAW_VOLUMEDAYTO = "RAW_VOLUMEDAYTO";
     public static final String DISPLAY_MARKET = "DISPLAY_MARKET";
     public static final String DISPLAY_FROMSYMBOL = "DISPLAY_FROMSYMBOL";
     public static final String DISPLAY_TOSYMBOL = "DISPLAY_TOSYMBOL";
@@ -52,6 +57,11 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
     public static final String DISPLAY_CHANGEPCT24HOUR = "DISPLAY_CHANGEPCT24HOUR";
     public static final String DISPLAY_SUPPLY = "DISPLAY_SUPPLY";
     public static final String DISPLAY_MKTCAP = "DISPLAY_MKTCAP";
+    public static final String DISPLAY_OPENDAY = "DISPLAY_OPENDAY";
+    public static final String DISPLAY_LOWDAY = "DISPLAY_LOWDAY";
+    public static final String DISPLAY_HIGHDAY = "DISPLAY_HIGHDAY";
+    public static final String DISPLAY_VOLUMEDAY = "DISPLAY_VOLUMEDAY";
+    public static final String DISPLAY_VOLUMEDAYTO = "DISPLAY_VOLUMEDAYTO";
     public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "
             + TABLE_NAME                +   " ("
             + RAW_TYPE                  +   " INTEGER,"
@@ -74,6 +84,11 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
             + RAW_CHANGEPCT24HOUR       +   " REAL,"
             + RAW_SUPPLY                +   " REAL,"
             + RAW_MKTCAP                +   " REAL,"
+            + RAW_OPENDAY               +   " REAL,"
+            + RAW_LOWDAY                +   " REAL,"
+            + RAW_HIGHDAY               +   " REAL,"
+            + RAW_VOLUMEDAY             +   " REAL,"
+            + RAW_VOLUMEDAYTO           +   " REAL,"
             + DISPLAY_MARKET            +   " TEXT,"
             + DISPLAY_FROMSYMBOL        +   " TEXT,"
             + DISPLAY_TOSYMBOL          +   " TEXT,"
@@ -92,6 +107,11 @@ public class WatchingCoinsDb extends SQLiteOpenHelper{
             + DISPLAY_CHANGEPCT24HOUR   +   " REAL,"
             + DISPLAY_SUPPLY            +   " REAL,"
             + DISPLAY_MKTCAP            +   " REAL,"
+            + DISPLAY_OPENDAY           +   " REAL,"
+            + DISPLAY_LOWDAY            +   " REAL,"
+            + DISPLAY_HIGHDAY           +   " REAL,"
+            + DISPLAY_VOLUMEDAY         +   " REAL,"
+            + DISPLAY_VOLUMEDAYTO       +   " REAL,"
             + "PRIMARY KEY(" + RAW_FROMSYMBOL + "));";
 
 

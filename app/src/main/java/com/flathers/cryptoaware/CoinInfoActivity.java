@@ -3,12 +3,14 @@ package com.flathers.cryptoaware;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -73,6 +75,8 @@ public class CoinInfoActivity extends AppCompatActivity {
         //editor = sharedPreferences.edit();
         currentCoin = sharedPreferences.getString("selectedCoin", "");
         Log.i(TAG, "currentCoin: " + currentCoin);
+
+        setTitle(currentCoin);
 
         //Make sure database is setup on load
         transactionsDb = new TransactionsDb(mContext);
@@ -199,7 +203,7 @@ public class CoinInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 //Perform calculations
-                coinQty = (buySell.equals("BUY")) ? abs(price) : -abs(price);
+                coinQty = (buySell.equals("BUY")) ? abs(coinQty) : -abs(coinQty);
                 total_btc = price * coinQty;
 
                 //Add values to transactions table
@@ -287,6 +291,49 @@ public class CoinInfoActivity extends AppCompatActivity {
 
                 c.close();
             }
+
+            rowView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    AlertDialog.Builder confirmation = new AlertDialog.Builder(mContext);
+                    confirmation.setTitle("Confirmation");
+                    confirmation.setMessage("Do you really want to delete this transaction?");
+                    confirmation.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.i(TAG, "Begin coin deletion for: " + transactions.get(position));
+
+                            //Delete transaction entries
+                            //Must happen before watching_coins deletion due to FK reference for PK
+                            dbWrite.delete(TransactionsDb.TABLE_NAME, TransactionsDb.ID + "=?", new String[]{transactions.get(position)});
+                            Log.i(TAG, "Transactions deleted for: " + transactions.get(position));
+
+                            //Delete item from ListView
+                            remove(transactions.get(position));
+
+                            //Re-render the coin view
+                            notifyDataSetChanged();
+                            renderTransactionsList();
+
+                            dialog.dismiss();
+                        }
+                    });
+
+                    confirmation.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // Do nothing
+                            dialog.dismiss();
+                        }
+                    });
+
+                    confirmation.create();
+                    confirmation.show();
+                    return false;
+                }
+            });
 
             return rowView;
         }

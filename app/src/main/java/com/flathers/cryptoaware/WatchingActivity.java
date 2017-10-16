@@ -62,6 +62,8 @@ public class WatchingActivity extends AppCompatActivity {
         //Setup sharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         editor = sharedPreferences.edit();
+        editor.putString("selectedCoin", "");
+        editor.apply();
 
         //Make sure database is setup on install
         watchingCoinsDb = new WatchingCoinsDb(mContext);
@@ -245,7 +247,22 @@ public class WatchingActivity extends AppCompatActivity {
             nameValue.setText(coins.get(position));
 
             //Display wallet price
-            walletValue.setText(Double.toString(calcWallet(coins.get(position))));
+            double walletCalcValue = calcWallet(coins.get(position));
+            String walletString = Double.toString(walletCalcValue);
+            int walletLength = (walletString.length() >= 11) ? 11 : walletString.length();
+            walletValue.setText(Double.toString(walletCalcValue).substring(0, walletLength));
+
+            //Display profit
+            double profitCalcValue = calcProfit(coins.get(position));
+            String profitString = Double.toString(profitCalcValue);
+            int profitLength = (profitString.length() >= 11) ? 11 : profitString.length();
+            profitValue.setText(Double.toString(profitCalcValue).substring(0, profitLength));
+
+            if(calcProfit(coins.get(position)) > 0){
+                profitValue.setTextColor(getResources().getColor(R.color.positive));
+            } else{
+                profitValue.setTextColor(getResources().getColor(R.color.negative));
+            }
 
             //load states of coins from SQL database
 
@@ -295,8 +312,10 @@ public class WatchingActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             Log.i(TAG, "Begin coin deletion for: " + coins.get(position));
 
-                            //TODO: Delete all transactions from transactions table
+                            //Delete transaction entries
                             //Must happen before watching_coins deletion due to FK reference for PK
+                            SQLiteDatabase dbWriteTransaction = new TransactionsDb(mContext).getWritableDatabase();
+                            dbWriteTransaction.delete(TransactionsDb.TABLE_NAME, TransactionsDb.RAW_FROMSYMBOL + "=?", new String[]{coins.get(position)});
                             Log.i(TAG, "Transactions deleted for: " + coins.get(position));
 
                             //Delete row from watching_coins table
@@ -334,9 +353,33 @@ public class WatchingActivity extends AppCompatActivity {
         }
     }
 
+    private double calcCoinQty(String cFind){
+        double totalCoin = 0;
+
+        String[] cols = {TransactionsDb.TRANSACTION_QTY};
+
+        TransactionsDb transactionsDb = new TransactionsDb(mContext);
+        SQLiteDatabase dbReadTransactions = transactionsDb.getReadableDatabase();
+        Cursor c = dbReadTransactions.query(
+                transactionsDb.TABLE_NAME,
+                cols,
+                "RAW_FROMSYMBOL=?",
+                new String[]{cFind},
+                null,
+                null,
+                null
+        );
+
+        while(c.moveToNext() && c != null) {
+            totalCoin += c.getDouble(c.getColumnIndexOrThrow(transactionsDb.TRANSACTION_QTY));
+        }
+
+        return totalCoin;
+    }
+
     private double calcWallet(String cFind){
-        String[] cols = {TransactionsDb.TOTAL_BTC};
         double wallet = 0;
+        String[] cols = {TransactionsDb.TOTAL_BTC};
 
         TransactionsDb transactionsDb = new TransactionsDb(mContext);
         SQLiteDatabase dbReadTransactions = transactionsDb.getReadableDatabase();
@@ -355,6 +398,35 @@ public class WatchingActivity extends AppCompatActivity {
         }
 
         return wallet;
+    }
+
+    private double calcProfit(String cFind){
+        double profit = 0;
+        double currentPrice = 0;
+        double wallet = calcWallet(cFind);
+        double totalCoin = calcCoinQty(cFind);
+
+        String[] cols = {watchingCoinsDb.RAW_PRICE};
+        Cursor c = dbRead.query(
+                watchingCoinsDb.TABLE_NAME,
+                cols,
+                "RAW_FROMSYMBOL=?",
+                new String[]{cFind},
+                null,
+                null,
+                null
+        );
+
+        //Necessary to try catch this for when adding a coin
+        try {
+            c.moveToFirst();
+            currentPrice = c.getDouble(c.getColumnIndexOrThrow(watchingCoinsDb.RAW_PRICE));
+            profit = currentPrice * totalCoin - wallet;
+        } catch (Exception err){
+            Log.i(TAG, err.toString());
+        }
+
+        return profit;
     }
 
     @Override
@@ -396,12 +468,14 @@ public class WatchingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        renderCoinListView();
         Log.i(STATE_TAG, "onStart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        renderCoinListView();
         Log.i(STATE_TAG, "onResume");
     }
 
@@ -420,6 +494,7 @@ public class WatchingActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        renderCoinListView();
         Log.i(STATE_TAG, "onRestart");
     }
 

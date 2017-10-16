@@ -12,7 +12,9 @@ import android.util.Log;
 
 public class TransactionsDb extends SQLiteOpenHelper {
     private static final String TAG = TransactionsDb.class.getName();
-    public static final String DB_NAME = "CryptoAware.db";
+
+    //TODO: Integrate temp db with main db eventually
+    public static final String DB_NAME = "CryptoAwareTemp.db";
     public static final String TABLE_NAME = "transactions";
     public static final int DB_VERSION = 1;
     public static final String ID = "ID";
@@ -30,8 +32,8 @@ public class TransactionsDb extends SQLiteOpenHelper {
             + TRANSACTION_QTY           +   " REAL,"
             + TRANSACTION_DATE          +   " TEXT,"
             + MARKET_PRICE              +   " REAL,"
-            + TOTAL_BTC                 +   " REAL,"
-            + "FOREIGN KEY (" + RAW_FROMSYMBOL +") REFERENCES " + WatchingCoinsDb.TABLE_NAME + "(" + WatchingCoinsDb.RAW_FROMSYMBOL + "));";
+            + TOTAL_BTC                 +   " REAL);";
+            //+ "FOREIGN KEY (" + RAW_FROMSYMBOL +") REFERENCES " + WatchingCoinsDb.DB_NAME.substring(0, WatchingCoinsDb.DB_NAME.length() - 3) + "." + WatchingCoinsDb.TABLE_NAME + "(" + WatchingCoinsDb.RAW_FROMSYMBOL + "));";
 
     TransactionsDb(Context context){
         super(context, DB_NAME, null, DB_VERSION);

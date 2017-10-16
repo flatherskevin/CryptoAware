@@ -1,8 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/transaction_txt_tableId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:id="@+id/transaction_txt_buySell"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="BUY"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/transaction_txt_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="8dp"
+            android:textSize="18sp"
+            android:text="01/01/2017"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="top|start"
+            android:text="@string/transaction_qty"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/transaction_txt_qty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="top|end"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="8dp"
+            android:textSize="20sp"
+            android:text="0.00"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="top|start"
+            android:text="@string/transaction_marketPrice"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/transaction_txt_marketPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="top|end"
+            android:textAlignment="textEnd"
+            android:layout_marginEnd="8dp"
+            android:textSize="20sp"
+            android:text="0.00"/>
+
+    </LinearLayout>
 
 </LinearLayout>

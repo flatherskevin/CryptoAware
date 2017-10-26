@@ -33,6 +33,7 @@ public class PriceMultiFull extends Price {
     private String url = "https://min-api.cryptocompare.com/data/pricemultifull?";
     private WatchingCoinsDb watchingCoinsDb;
     private SQLiteDatabase db;
+    private SQLiteDatabase dbRead;
     private String primaryKeyValue;
     private final String TABLE_NAME;
 
@@ -43,6 +44,8 @@ public class PriceMultiFull extends Price {
         this.setURL();
         this.watchingCoinsDb = new WatchingCoinsDb(mContext);
         this.db = watchingCoinsDb.getWritableDatabase();
+        this.dbRead = watchingCoinsDb.getReadableDatabase();
+
         //this.contentValues = new ContentValues();
         this.primaryKeyValue = "";
         this.TABLE_NAME = watchingCoinsDb.TABLE_NAME;
@@ -121,11 +124,18 @@ public class PriceMultiFull extends Price {
 
                     String compoundColumn = prefix + "_" + innerKey;
 
-                    //Put in value proper column
-                    contentValues.put(compoundColumn, thisData);
-                    Log.i(TAG, "ContentValue added - " + compoundColumn + ": " + thisData);
-                    if(compoundColumn.equals("RAW_FROMSYMBOL")){
-                        primaryKeyValue = thisData;
+                    //Check if compoundColumn exists before inputing into db
+                    String[] cols = {compoundColumn};
+
+                    Cursor c= dbRead.rawQuery("SELECT * FROM " + watchingCoinsDb.TABLE_NAME + " LIMIT 0", null);
+
+                    if (c.getColumnIndex(compoundColumn) != -1){
+                        //Put in value proper column
+                        contentValues.put(compoundColumn, thisData);
+                        Log.i(TAG, "ContentValue added - " + compoundColumn + ": " + thisData);
+                        if (compoundColumn.equals("RAW_FROMSYMBOL")) {
+                            primaryKeyValue = thisData;
+                        }
                     }
                 } catch (JSONException e) {
                     Log.i(TAG, "Error with inner coin loop: " + e.toString());

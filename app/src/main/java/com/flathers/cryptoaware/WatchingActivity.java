@@ -246,11 +246,8 @@ public class WatchingActivity extends AppCompatActivity {
             //Change text to that of the current coin
             nameValue.setText(coins.get(position));
 
-            //Display wallet price
-            double walletCalcValue = calcWallet(coins.get(position));
-            String walletString = Double.toString(walletCalcValue);
-            int walletLength = (walletString.length() >= 11) ? 11 : walletString.length();
-            walletValue.setText(Double.toString(walletCalcValue).substring(0, walletLength));
+            //Display total coins in wallet
+            walletValue.setText(Double.toString(calcCoinQty(coins.get(position))));
 
             //Display profit
             double profitCalcValue = calcProfit(coins.get(position));
